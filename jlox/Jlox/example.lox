@@ -6,3 +6,5 @@
 string"
 1234
 42.1
+
+print "Hello"
