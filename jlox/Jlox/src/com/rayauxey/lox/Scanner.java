@@ -104,7 +104,18 @@ public class Scanner {
         if (match('/'))
           while (peek() != '\n' && !isAtEnd())
             advance();
-        else
+        else if (match('*')) {
+          while (!isAtEnd()) {
+            if (peek() == '\n')
+              line++;
+            else if ((peek() == '*' && peekNext() == '/')) {
+              advance();
+              advance();
+              break;
+            }
+            advance();
+          }
+        } else
           addToken(TokenType.SLASH);
         break;
 

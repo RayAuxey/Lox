@@ -1,10 +1,6 @@
-// This is an example lox script
-({}) !
-!= == >=
-"Hello, world!"
-"Long
-string"
-1234
-42.1
-
-print "Hello"
+/*
+*This is a multiline comment
+*/
+// This is an single line comment
+print "Hello world"
+/*this is an error*/ &
