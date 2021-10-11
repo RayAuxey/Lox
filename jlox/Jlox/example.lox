@@ -1,0 +1,8 @@
+// This is an example lox script
+({}) !
+!= == >=
+"Hello, world!"
+"Long
+string"
+1234
+42.1
