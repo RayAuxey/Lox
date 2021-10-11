@@ -78,7 +78,6 @@ public class Scanner {
         addToken(match('=') ? TokenType.GREATER_EQUAL : TokenType.GREATER);
         break;
       case '/':
-
         // Handle comments
         if (match('/'))
           while (peek() != '\n' && !isAtEnd())
@@ -96,10 +95,36 @@ public class Scanner {
       case '\n':
         line++;
         break;
+
+      // Handle string literals
+      case '"':
+        string();
+        break;
+
       default:
         Lox.error(line, "Unexpected character");
         break;
     }
+  }
+
+  private void string() {
+    while (peek() != '"' && !isAtEnd()) {
+      if (peek() == '\n')
+        line++;
+      advance();
+    }
+
+    if (isAtEnd()) {
+      Lox.error(line, "Unterminated string.");
+      return;
+    }
+
+    // The closing "
+    advance();
+
+    // Trim surrounding quotes
+    String value = source.substring(start + 1, current - 1);
+    addToken(TokenType.STRING, value);
   }
 
   private char peek() {
