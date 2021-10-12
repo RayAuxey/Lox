@@ -39,6 +39,11 @@ const defineType = (baseName, className, fields) => {
     ${className} (${fields}) {
       ${generateConstructor(fields)}
     }
+
+    @Override
+    <R> R accept(Visitor<R> visitor) {
+      return visitor.visit${className}${baseName}(this);
+    }
   }
   `;
 };
@@ -52,6 +57,18 @@ const defineTypes = (baseName, types) => {
   return result;
 };
 
+const defineVisitor = (baseName, types) => {
+  let result = `interface Visitor<R> {
+    `;
+  for (const type of types) {
+    const [typeName] = type.split(":").map((a) => a.trim());
+    result += `R visit${typeName}${baseName}(${typeName} ${baseName.toLowerCase()});
+    `;
+  }
+  return `${result}
+  }`;
+};
+
 const defineAst = (outputDir, baseName, types) => {
   const pathToFIle = path.join(outputDir, `${baseName}.java`);
 
@@ -62,6 +79,10 @@ const defineAst = (outputDir, baseName, types) => {
 import java.util.List;
 
 abstract class ${baseName} {
+  ${defineVisitor(baseName, types)}
+
+  abstract<R> R accept(Visitor<R> visitor);
+
   ${defineTypes(baseName, types)}
 }
 `
@@ -74,3 +95,5 @@ defineAst(outputDir, "Expr", [
   "Literal  : Object value",
   "Unary    : Token operator, Expr right",
 ]);
+
+module.exports = { defineAst };

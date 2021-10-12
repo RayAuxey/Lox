@@ -3,6 +3,16 @@ package com.rayauxey.lox;
 import java.util.List;
 
 abstract class Expr {
+  interface Visitor<R> {
+    R visitBinaryExpr(Binary expr);
+    R visitGroupingExpr(Grouping expr);
+    R visitLiteralExpr(Literal expr);
+    R visitUnaryExpr(Unary expr);
+    
+  }
+
+  abstract<R> R accept(Visitor<R> visitor);
+
   static class Binary extends Expr {
     final Expr left;
     final Token operator;
@@ -14,6 +24,11 @@ abstract class Expr {
       this.right = right;
       
     }
+
+    @Override
+    <R> R accept(Visitor<R> visitor) {
+      return visitor.visitBinaryExpr(this);
+    }
   }
   static class Grouping extends Expr {
     final Expr expression;
@@ -22,6 +37,11 @@ abstract class Expr {
       this.expression = expression;
       
     }
+
+    @Override
+    <R> R accept(Visitor<R> visitor) {
+      return visitor.visitGroupingExpr(this);
+    }
   }
   static class Literal extends Expr {
     final Object value;
@@ -29,6 +49,11 @@ abstract class Expr {
     Literal (Object value) {
       this.value = value;
       
+    }
+
+    @Override
+    <R> R accept(Visitor<R> visitor) {
+      return visitor.visitLiteralExpr(this);
     }
   }
   static class Unary extends Expr {
@@ -39,6 +64,11 @@ abstract class Expr {
       this.operator = operator;
       this.right = right;
       
+    }
+
+    @Override
+    <R> R accept(Visitor<R> visitor) {
+      return visitor.visitUnaryExpr(this);
     }
   }
   
